@@ -1,0 +1,246 @@
+-- UNIQUE HUB | LUCK GUI
+-- LocalScript | Roblox Studio
+
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "UniqueLuckGUI"
+gui.ResetOnSpawn = false
+gui.Parent = player:WaitForChild("PlayerGui")
+
+-- สีรุ้ง (วนกลับมาสีเดิมเพื่อให้หมุนแล้วไม่เห็นรอยต่อ)
+local rainbow = ColorSequence.new({
+    ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 120, 150)),
+    ColorSequenceKeypoint.new(0.20, Color3.fromRGB(255, 190, 110)),
+    ColorSequenceKeypoint.new(0.40, Color3.fromRGB(190, 240, 120)),
+    ColorSequenceKeypoint.new(0.60, Color3.fromRGB(110, 210, 255)),
+    ColorSequenceKeypoint.new(0.80, Color3.fromRGB(170, 130, 255)),
+    ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 120, 150))
+})
+
+-- Main Frame
+local main = Instance.new("Frame")
+main.Name = "Main"
+main.Size = UDim2.fromOffset(370, 105)
+main.Position = UDim2.new(0.5, -185, 0.25, 0)
+main.BackgroundColor3 = Color3.fromRGB(22, 23, 26)
+main.BorderSizePixel = 0
+main.ZIndex = 2
+main.Parent = gui
+
+Instance.new("UICorner", main).CornerRadius = UDim.new(0, 24)
+
+-- Rainbow Border
+local stroke = Instance.new("UIStroke")
+stroke.Thickness = 3
+stroke.Color = Color3.new(1, 1, 1)
+stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+stroke.Parent = main
+
+local borderGradient = Instance.new("UIGradient")
+borderGradient.Color = rainbow
+borderGradient.Parent = stroke
+
+-- Rainbow Glow (แสงเรืองรอบกรอบ)
+local glow = Instance.new("Frame")
+glow.Name = "Glow"
+glow.BackgroundTransparency = 1
+glow.Size = UDim2.new(1, 0, 1, 0)
+glow.ZIndex = 1
+glow.Parent = main
+
+Instance.new("UICorner", glow).CornerRadius = UDim.new(0, 24)
+
+local glowStroke = Instance.new("UIStroke")
+glowStroke.Thickness = 10
+glowStroke.Transparency = 0.8
+glowStroke.Color = Color3.new(1, 1, 1)
+glowStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+glowStroke.Parent = glow
+
+local glowGradient = Instance.new("UIGradient")
+glowGradient.Color = rainbow
+glowGradient.Parent = glowStroke
+
+local glowStroke2 = Instance.new("UIStroke")
+glowStroke2.Thickness = 20
+glowStroke2.Transparency = 0.92
+glowStroke2.Color = Color3.new(1, 1, 1)
+glowStroke2.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+glowStroke2.Parent = glow
+
+local glowGradient2 = Instance.new("UIGradient")
+glowGradient2.Color = rainbow
+glowGradient2.Parent = glowStroke2
+
+-- Header (Drag Area)
+local header = Instance.new("Frame")
+header.Size = UDim2.new(1, 0, 0, 65)
+header.BackgroundTransparency = 1
+header.Active = true
+header.ZIndex = 3
+header.Parent = main
+
+-- Status Dot
+local dot = Instance.new("Frame")
+dot.Size = UDim2.fromOffset(17, 17)
+dot.Position = UDim2.fromOffset(25, 25)
+dot.BackgroundColor3 = Color3.fromRGB(50, 220, 120)
+dot.BorderSizePixel = 0
+dot.ZIndex = 4
+dot.Parent = header
+
+Instance.new("UICorner", dot).CornerRadius = UDim.new(1, 0)
+
+-- Title (ตัวอักษรไล่สีรุ้ง)
+local title = Instance.new("TextLabel")
+title.Size = UDim2.fromOffset(180, 40)
+title.Position = UDim2.fromOffset(65, 13)
+title.BackgroundTransparency = 1
+title.Text = "UNIQUE"
+title.TextColor3 = Color3.new(1, 1, 1)
+title.TextSize = 30
+title.Font = Enum.Font.GothamBlack
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.ZIndex = 4
+title.Parent = header
+
+local titleGradient = Instance.new("UIGradient")
+titleGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0.00, Color3.fromRGB(255, 120, 150)),
+    ColorSequenceKeypoint.new(0.25, Color3.fromRGB(255, 190, 110)),
+    ColorSequenceKeypoint.new(0.50, Color3.fromRGB(150, 235, 140)),
+    ColorSequenceKeypoint.new(0.75, Color3.fromRGB(110, 190, 255)),
+    ColorSequenceKeypoint.new(1.00, Color3.fromRGB(180, 130, 255))
+})
+titleGradient.Parent = title
+
+-- Subtitle
+local subtitle = Instance.new("TextLabel")
+subtitle.Size = UDim2.fromOffset(250, 27)
+subtitle.Position = UDim2.fromOffset(25, 65)
+subtitle.BackgroundTransparency = 1
+subtitle.Text = "Unique Luck Active 🍀"
+subtitle.TextColor3 = Color3.fromRGB(170, 175, 185)
+subtitle.TextSize = 18
+subtitle.Font = Enum.Font.GothamMedium
+subtitle.TextXAlignment = Enum.TextXAlignment.Left
+subtitle.ZIndex = 4
+subtitle.Parent = main
+
+-- Toggle Button
+local toggle = Instance.new("TextButton")
+toggle.Size = UDim2.fromOffset(88, 52)
+toggle.Position = UDim2.new(1, -112, 0, 30)
+toggle.BackgroundColor3 = Color3.fromRGB(45, 205, 115)
+toggle.Text = ""
+toggle.AutoButtonColor = false
+toggle.ZIndex = 5
+toggle.Parent = main
+
+Instance.new("UICorner", toggle).CornerRadius = UDim.new(1, 0)
+
+-- Toggle Text
+local toggleText = Instance.new("TextLabel")
+toggleText.Size = UDim2.new(1, -28, 1, 0)
+toggleText.Position = UDim2.fromOffset(10, 0)
+toggleText.BackgroundTransparency = 1
+toggleText.Text = "On"
+toggleText.TextColor3 = Color3.fromRGB(15, 65, 40)
+toggleText.TextSize = 20
+toggleText.Font = Enum.Font.GothamBold
+toggleText.ZIndex = 6
+toggleText.Parent = toggle
+
+-- Toggle Circle
+local circle = Instance.new("Frame")
+circle.Size = UDim2.fromOffset(40, 40)
+circle.Position = UDim2.new(1, -44, 0.5, -20)
+circle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+circle.BorderSizePixel = 0
+circle.ZIndex = 7
+circle.Parent = toggle
+
+Instance.new("UICorner", circle).CornerRadius = UDim.new(1, 0)
+
+local enabled = true
+
+local function tween(object, properties, time)
+    TweenService:Create(
+        object,
+        TweenInfo.new(time or 0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
+        properties
+    ):Play()
+end
+
+-- Toggle Function
+toggle.MouseButton1Click:Connect(function()
+    enabled = not enabled
+
+    if enabled then
+        toggleText.Text = "On"
+        tween(toggle, {BackgroundColor3 = Color3.fromRGB(45, 205, 115)})
+        tween(circle, {Position = UDim2.new(1, -44, 0.5, -20)})
+        tween(dot, {BackgroundColor3 = Color3.fromRGB(50, 220, 120)})
+        tween(glowStroke, {Transparency = 0.8})
+        tween(glowStroke2, {Transparency = 0.92})
+    else
+        toggleText.Text = "Off"
+        tween(toggle, {BackgroundColor3 = Color3.fromRGB(85, 88, 100)})
+        tween(circle, {Position = UDim2.new(0, 4, 0.5, -20)})
+        tween(dot, {BackgroundColor3 = Color3.fromRGB(230, 75, 85)})
+        tween(glowStroke, {Transparency = 1})
+        tween(glowStroke2, {Transparency = 1})
+    end
+end)
+
+-- แอนิเมชันแสงรุ้งหมุน
+RunService.RenderStepped:Connect(function()
+    local rot = (tick() * 60) % 360
+    borderGradient.Rotation = rot
+    glowGradient.Rotation = rot
+    glowGradient2.Rotation = rot
+end)
+
+-- Draggable GUI
+local dragging = false
+local dragStart
+local startPos
+
+header.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1
+    or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = main.Position
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if dragging and (
+        input.UserInputType == Enum.UserInputType.MouseMovement
+        or input.UserInputType == Enum.UserInputType.Touch
+    ) then
+        local delta = input.Position - dragStart
+        main.Position = UDim2.new(
+            startPos.X.Scale,
+            startPos.X.Offset + delta.X,
+            startPos.Y.Scale,
+            startPos.Y.Offset + delta.Y
+        )
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1
+    or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = false
+    end
+end)
+
+print("UNIQUE HUB LOADED")
